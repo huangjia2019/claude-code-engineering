@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Skill(route-scanning)",
+      "Skill(doc-writing)",
+      "Skill(quality-checking)"
+    ]
+  }
+}
