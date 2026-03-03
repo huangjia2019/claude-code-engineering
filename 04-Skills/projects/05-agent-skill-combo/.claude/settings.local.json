@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Skill(api-generating)",
-      "Bash(python3:*)",
-      "Bash(python scripts/detect-routes.py:*)"
-    ]
-  }
-}

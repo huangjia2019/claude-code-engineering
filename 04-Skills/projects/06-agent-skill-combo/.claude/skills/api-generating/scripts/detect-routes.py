@@ -75,7 +75,7 @@ def scan_file(filepath):
                     # router.route() — need to find chained methods
                     route_path = groups[0]
                     # Look at this line and next few lines for chained methods
-                    context = ''.join(lines[i-1:min(i+5, len(lines))])
+                    context = ''.join(lines[i-1:min(i+15, len(lines))])
                     for chain_match in CHAINED_METHOD.finditer(context):
                         routes.append({
                             'method': chain_match.group(1).upper(),
