@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "MCP 配置示例 - 与第17讲文章对应的完整开发者工具箱",
+
+  "mcpServers": {
+
+    "context7": {
+      "$comment": "实时技术文档 - 写代码时拉取最新官方文档，无需 API Key",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+
+    "github": {
+      "$comment": "GitHub 集成 - HTTP 传输，需要 GITHUB_TOKEN",
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_TOKEN}"
+      }
+    },
+
+    "notion": {
+      "$comment": "Notion 集成 - 需要 NOTION_API_KEY",
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${NOTION_API_KEY}"
+      }
+    },
+
+    "database": {
+      "$comment": "数据库查询 - 支持 PostgreSQL/MySQL/SQLite，需要 DATABASE_URL",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@bytebase/dbhub", "--dsn", "${DATABASE_URL}"]
+    },
+
+    "fetch": {
+      "$comment": "HTTP 请求能力 - 无需 API Key",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-fetch"]
+    },
+
+    "filesystem": {
+      "$comment": "文件系统访问 - 限制在指定目录内",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "/path/to/allowed/directory"
+      ]
+    },
+
+    "memory": {
+      "$comment": "持久化记忆存储 - 无需 API Key",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-memory"]
+    }
+  }
+}
