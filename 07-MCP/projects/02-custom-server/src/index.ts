@@ -230,12 +230,12 @@ server.tool(
 // 定义可读取的资源
 server.resource(
   "stats",
-  "Server statistics",
-  async () => {
+  "stats://current",
+  async (uri) => {
     return {
       contents: [
         {
-          uri: "stats://current",
+          uri: uri.href,
           mimeType: "application/json",
           text: JSON.stringify(
             {

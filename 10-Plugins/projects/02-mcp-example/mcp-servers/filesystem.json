@@ -1,0 +1,10 @@
+{
+  "name": "filesystem",
+  "description": "Enhanced filesystem operations: search, batch operations, file watching",
+  "type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@anthropic/mcp-server-filesystem"],
+  "env": {
+    "ALLOWED_PATHS": "${HOME}/projects,${PWD}"
+  }
+}

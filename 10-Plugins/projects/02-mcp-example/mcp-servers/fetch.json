@@ -1,0 +1,10 @@
+{
+  "name": "fetch",
+  "description": "HTTP request capability: GET, POST, and other methods to external APIs",
+  "type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@anthropic/mcp-server-fetch"],
+  "env": {
+    "USER_AGENT": "Claude-Code-Plugin/1.0"
+  }
+}

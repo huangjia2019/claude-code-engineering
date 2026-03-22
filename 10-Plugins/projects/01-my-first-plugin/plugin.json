@@ -1,0 +1,9 @@
+{
+  "name": "dev-helper",
+  "version": "1.0.0",
+  "description": "开发者常用工具集：快捷命令和代码助手",
+  "author": "Tutorial Author",
+  "repository": "https://github.com/example/dev-helper",
+  "keywords": ["developer", "productivity", "code-helper"],
+  "license": "MIT"
+}

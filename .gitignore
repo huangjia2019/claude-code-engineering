@@ -2,33 +2,8 @@
 ARCHITECTURE.md
 **/tutorial.md
 
-# Projects 目录
+# Projects 大写目录（旧命名）
 **/Projects/
-
-# 06-10 章节内容（仅保留 README.md 和 projects）
-06-Hooks/*
-!06-Hooks/README.md
-!06-Hooks/projects/
-07-MCP/*
-!07-MCP/README.md
-!07-MCP/projects/
-08-Headless/*
-!08-Headless/README.md
-09-Agent-SDK/*
-!09-Agent-SDK/README.md
-10-Plugins/*
-!10-Plugins/README.md
-
-# 课程后续章节（待发布）
-11-Debugging/
-12-Cost-Control/
-13-Security/
-14-Large-Codebase/
-15-Prompt-Engineering/
-16-Team-Collaboration/
-80-DreamApp/
-81-multi-agent-patterns/
-90-Documents/
 
 # IDE
 .vscode/

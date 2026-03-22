@@ -15,9 +15,9 @@
     },
     "fetch": {
       "type": "stdio",
-      "command": "npx",
+      "command": "uvx",
       "args": [
-        "@modelcontextprotocol/server-fetch"
+        "mcp-server-fetch"
       ]
     },
     "memory": {

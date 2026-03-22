@@ -1,0 +1,146 @@
+# Claude Code 自动 PR 审查
+#
+# 当 PR 创建或更新时，自动运行代码审查并发表评论
+#
+# 使用前需要设置 Secret:
+# - ANTHROPIC_API_KEY: Anthropic API Key
+
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# 取消正在运行的重复工作流
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    # 权限设置
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      # 1. 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 需要完整历史以获取 diff
+
+      # 2. 设置 Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # 3. 安装 Claude Code
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      # 4. 获取变更文件列表
+      - name: Get changed files
+        id: changed
+        run: |
+          # 获取 PR 中变更的文件
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "Changed files:"
+          echo "$FILES"
+
+          # 转为单行格式
+          FILES_INLINE=$(echo "$FILES" | tr '\n' ' ')
+          echo "files=$FILES_INLINE" >> $GITHUB_OUTPUT
+
+          # 统计数量
+          COUNT=$(echo "$FILES" | wc -l)
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+
+      # 5. 运行 Claude 审查
+      - name: Run Claude Review
+        id: review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # 创建审查提示
+          PROMPT="Review this Pull Request:
+
+          ## Changed Files (${{ steps.changed.outputs.count }} files)
+          ${{ steps.changed.outputs.files }}
+
+          ## Review Guidelines
+          Please review for:
+          1. **Code Quality**: Clean code, proper naming, DRY principle
+          2. **Bugs**: Potential bugs, edge cases, error handling
+          3. **Security**: Security vulnerabilities, input validation
+          4. **Performance**: Inefficient code, unnecessary operations
+          5. **Best Practices**: Framework conventions, patterns
+
+          ## Output Format
+          Provide feedback in this format:
+
+          ### Summary
+          [1-2 sentence overview]
+
+          ### Issues Found
+          - 🔴 **Critical**: [description] (file:line)
+          - 🟡 **Warning**: [description] (file:line)
+          - 🔵 **Suggestion**: [description] (file:line)
+
+          ### Recommendations
+          [Actionable suggestions]
+
+          ### Verdict
+          ✅ Approved / ⚠️ Needs Changes / ❌ Request Changes"
+
+          # 运行审查
+          claude -p "$PROMPT" \
+            --output-format json \
+            --max-turns 10 \
+            --allowedTools Read,Grep,Glob > review.json
+
+          # 提取结果
+          RESULT=$(jq -r '.result' review.json)
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # 6. 发布审查评论
+      - name: Post Review Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const review = `${{ steps.review.outputs.result }}`;
+
+            // 添加头部信息
+            const comment = `## 🤖 Claude Code Review
+
+            ${review}
+
+            ---
+            *Automated review by Claude Code*`;
+
+            // 发布评论
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      # 7. 检查是否有关键问题
+      - name: Check for critical issues
+        run: |
+          RESULT="${{ steps.review.outputs.result }}"
+
+          if echo "$RESULT" | grep -q "🔴 \*\*Critical\*\*"; then
+            echo "::warning::Critical issues found in code review"
+          fi
+
+          if echo "$RESULT" | grep -q "❌ Request Changes"; then
+            echo "::error::Code review requests changes"
+            exit 1
+          fi
