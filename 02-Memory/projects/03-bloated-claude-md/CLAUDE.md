@@ -36,14 +36,6 @@ pnpm stripe:listen                 # Webhook forwarding
 
 ---
 
-# ========================================
-# RULES — 以下全部是规则/规范
-# 一个正常项目不应该把这些全塞在 CLAUDE.md 里
-# 它们应该拆分到 .claude/rules/ 目录中
-# ========================================
-
----
-
 ## React Rules
 
 ### Component Structure
