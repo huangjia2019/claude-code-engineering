@@ -17,6 +17,4 @@
 
 - Rules 配置示例 → [02-Memory/projects/](../02-Memory/projects/)
 - 权限与安全实践 → [06-Hooks/projects/01-safety-hooks/](../06-Hooks/projects/01-safety-hooks/)
-- 相关 QA（Q4/Q13/Q14/Q15） → [02-Memory/QA.md](../02-Memory/QA.md)
-
 > 祝大家学习顺利
