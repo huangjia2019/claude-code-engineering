@@ -16,22 +16,22 @@
 
 ```
 projects/
-├── 01-basic-agent/         # 基础代码分析器
-│   └── code_analyzer.py
+├── 01-hello-agent/         # 第 21 讲「安装与第一次调用」
+│   └── hello.py            #   最简 Agent：5 行核心代码的 Hello World
 │
-├── 01-hello-agent/         # Hello World：第一个 Agent
-│   └── hello.py
+├── 01-basic-agent/         # 第 21 讲「安装与第一次调用」（早期版本）
+│   └── code_analyzer.py    #   基础代码分析器
 │
-├── 02-code-analyzer/       # 代码分析 Agent
-│   └── analyzer.py
+├── 02-code-analyzer/       # 第 21 讲「实战项目：代码分析 Agent」
+│   └── analyzer.py         #   只读分析 Agent：ClaudeCodeOptions 配置 + 消息分类处理
 │
-├── 03-custom-tools/        # 自定义工具演示
-│   └── tool_demo.py
+├── 03-custom-tools/        # 第 22 讲「自定义工具：给 Agent 装上新技能」
+│   └── tool_demo.py        #   @tool 装饰器 + create_sdk_mcp_server 演示
 │
-└── 04-test-fixer/          # 自动化测试修复 Agent
-    ├── fixer.py
-    ├── src/calculator.py
-    └── tests/test_calculator.py
+└── 04-test-fixer/          # 第 22 讲「实战项目：测试修复 Agent」
+    ├── fixer.py             #   两阶段工作流：分析(plan) → 修复(acceptEdits)
+    ├── src/calculator.py    #   被测代码（故意留有 bug）
+    └── tests/test_calculator.py  #   测试用例（会失败，等 Agent 来修）
 ```
 
 ## 一句话预告
