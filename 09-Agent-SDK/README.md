@@ -19,9 +19,6 @@ projects/
 ├── 01-hello-agent/         # 第 21 讲「安装与第一次调用」
 │   └── hello.py            #   最简 Agent：5 行核心代码的 Hello World
 │
-├── 01-basic-agent/         # 第 21 讲「安装与第一次调用」（早期版本）
-│   └── code_analyzer.py    #   基础代码分析器
-│
 ├── 02-code-analyzer/       # 第 21 讲「实战项目：代码分析 Agent」
 │   └── analyzer.py         #   只读分析 Agent：ClaudeCodeOptions 配置 + 消息分类处理
 │

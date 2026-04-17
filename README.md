@@ -98,16 +98,22 @@ Description 不只是说明文档，而是触发器——掌握让 Claude 自动
 
 ## 第五部分：生产化与工程化
 
-### 第 18 讲：无人值守 · Headless 模式与 CI/CD 集成
+### 第 18 讲：庖丁解牛 · Tools 工具系统深度剖析
+十几个精选的原语工具覆盖五个原子操作，通过涌现产生无限复杂能力——理解工具背后的设计哲学，用起来才能游刃有余。
+
+### 第 19 讲：无人值守 · Headless 模式与 CI/CD 集成
 当 Claude Code 脱离人的实时操控，以守护进程般的姿态嵌入流水线，开发团队获得的不只是效率提升，而是一种全新的人机协作节奏。
 
-### 第 19 讲：庖丁解牛 · Agent SDK 基础
-SDK 把 Claude Code 的能力拆解为可编程的接口——`query()` 和 `ClaudeSDKClient`，让你像调用函数一样驱动 AI Agent。
+### 第 20 讲：有章可循 · Rules 规则系统深度剖析
+指令规则告诉 Claude 该怎么做，权限规则告诉 Claude 能做什么——两套规则协同运作，构成整个系统的行为约束体系。
 
-### 第 20 讲：得心应手 · Agent SDK 高级应用
+### 第 21 讲：登堂入室 · Agent SDK 基础
+SDK 把 Claude Code 的能力拆解为可编程的接口——`query()` 和 `ClaudeCodeOptions`，让你像调用函数一样驱动 AI Agent。
+
+### 第 22 讲：得心应手 · Agent SDK 高级应用
 **项目：自动化测试修复 Agent** — 自定义工具、Hooks 拦截、权限分层和流式会话，构建生产级 AI Agent。
 
-### 第 21 讲：化零为整 · Plugins 插件打包与分发
+### 第 23 讲：化零为整 · Plugins 插件打包与分发
 **项目：团队能力包** — 把 Commands、Skills、Agents、Hooks、MCP 配置打包成一个可安装、可升级、可分享的插件，实现团队资产沉淀与共享。
 
 ---
