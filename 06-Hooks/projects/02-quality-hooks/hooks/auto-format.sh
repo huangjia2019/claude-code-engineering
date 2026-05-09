@@ -29,7 +29,7 @@ case "$EXTENSION" in
     js|jsx|ts|tsx|json|md|css|scss|html)
         # 使用 Prettier
         if command -v npx &> /dev/null; then
-            if npx prettier --write "$FILE_PATH" 2>&1; then
+            if npx prettier --write "$FILE_PATH" >&2; then
                 echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "Formatted with Prettier"}}'
             else
                 echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "Prettier formatting failed"}}'
@@ -41,7 +41,7 @@ case "$EXTENSION" in
     py)
         # 使用 Black
         if command -v black &> /dev/null; then
-            if black "$FILE_PATH" 2>&1; then
+            if black "$FILE_PATH" >&2; then
                 echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "Formatted with Black"}}'
             else
                 echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "Black formatting failed"}}'
@@ -53,7 +53,7 @@ case "$EXTENSION" in
     go)
         # 使用 gofmt
         if command -v gofmt &> /dev/null; then
-            if gofmt -w "$FILE_PATH" 2>&1; then
+            if gofmt -w "$FILE_PATH" >&2; then
                 echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "Formatted with gofmt"}}'
             else
                 echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "gofmt formatting failed"}}'
@@ -65,7 +65,7 @@ case "$EXTENSION" in
     rs)
         # 使用 rustfmt
         if command -v rustfmt &> /dev/null; then
-            if rustfmt "$FILE_PATH" 2>&1; then
+            if rustfmt "$FILE_PATH" >&2; then
                 echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "Formatted with rustfmt"}}'
             else
                 echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "rustfmt formatting failed"}}'
