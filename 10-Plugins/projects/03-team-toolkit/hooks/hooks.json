@@ -1,0 +1,19 @@
+{
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "command": ["bash", "./hooks/check-bash.sh"]
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "command": ["bash", "./hooks/auto-format.sh"]
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": "Edit",
+      "command": ["bash", "./hooks/auto-format.sh"]
+    }
+  ]
+}
