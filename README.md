@@ -1,5 +1,47 @@
 # Claude Code 工程化实战 · 课程大纲
 
+---
+
+## 📕 重磅新书[《Claude Code 实战》](https://item.jd.com/15374814.html)正式发布
+
+<div align="center">
+
+<a href="https://item.jd.com/15374814.html"><img src="91-Pictures/Claude-Code实战-封面.png" alt="Claude Code 实战 封面" width="320"/></a>
+
+<br/>
+
+<p>
+  <a href="https://item.jd.com/15374814.html"><img src="https://img.shields.io/badge/📕_新书-Claude_Code实战-d4380d?style=for-the-badge&labelColor=2d3748" alt="Claude Code 实战"/></a>
+  <a href="https://item.jd.com/15374814.html"><img src="https://img.shields.io/badge/状态-正式上线_🎉-success?style=for-the-badge" alt="正式上线"/></a>
+  <a href="https://item.jd.com/15374814.html"><img src="https://img.shields.io/badge/共10章-体系化讲解-7c3aed?style=for-the-badge" alt="10章"/></a>
+</p>
+
+<a href="https://item.jd.com/15374814.html"><img src="https://img.shields.io/badge/🛒_京东购买-item.jd.com%2F15374814-e1251b?style=for-the-badge&labelColor=2d3748" alt="京东购买"/></a>
+
+</div>
+
+**这本书和极客时间的课程不是同一份内容——它们刻意做成互补的两条腿。**
+
+|  | 📕 [《Claude Code 实战》（书）](https://item.jd.com/15374814.html) | 🎯 Claude Code 工程化实战（极客时间课程） |
+|---|---|---|
+| **形态** | 10 章纸质书 / 电子书 | 23 讲音频专栏 + 视频 |
+| **节奏** | 体系化阅读，章节之间环环相扣 | 一讲一个主题，独立可拆，碎片时间消化 |
+| **取舍** | 把整个 Claude Code 的技术全景**讲透讲深**，重原理与心法 | 在书的基础上**加项目、加更新、加深度案例**——SubAgent 专题 5 讲、Skills 专题 6 讲 |
+| **代码** | 章节配套代码片段（见 [📦 配套代码](#-书籍配套代码) ） | 每讲一个 `projects/` 子目录，可直接跑 |
+| **适合谁** | 想用一本书系统建立 Claude Code 完整心智模型 | 想跟着真实项目一步步做，把每个机制吃透 |
+
+**怎么配合阅读：**
+
+> 📕 **先读书**，建立 10 章的完整骨架（记忆 / Skills / SubAgent / Hooks / MCP / Headless / SDK / Plugins）→ 🎯 **再跟课程**，每个机制用 2-3 讲深挖项目细节、踩坑现场和最新更新。
+>
+> 一本书一门课，正好把 Claude Code 的"骨"和"肉"补全。
+
+📕 **欢迎大家翻翻[这本新书](https://item.jd.com/15374814.html)** —— 不管是刚接触 Claude Code 想找一本权威入门，还是已经在用想把整套工程化方法论补齐，这本书都能帮你少踩很多坑。
+
+> 🛒 **京东购买链接**：<https://item.jd.com/15374814.html>
+
+---
+
 <p align="center">
   <a href="https://time.geekbang.org/column/intro/101113501"><img src="https://img.shields.io/badge/平台-极客时间-00b4ab?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyTDIgN2wxMCA1IDEwLTV6Ii8+PC9zdmc+" alt="极客时间"/></a>
   <a href="https://time.geekbang.org/column/intro/101113501"><img src="https://img.shields.io/badge/2026-首发专栏-ff6b35?style=for-the-badge" alt="2026首发"/></a>
@@ -115,6 +157,16 @@ SDK 把 Claude Code 的能力拆解为可编程的接口——`query()` 和 `Cla
 
 ### 第 23 讲：化零为整 · Plugins 插件打包与分发
 **项目：团队能力包** — 把 Commands、Skills、Agents、Hooks、MCP 配置打包成一个可安装、可升级、可分享的插件，实现团队资产沉淀与共享。
+
+---
+
+## 📦 书籍配套代码
+
+[《Claude Code 实战》](https://item.jd.com/15374814.html)全书 10 章的代码片段已整理为独立目录，每章一个子文件夹，按章节内出现顺序编号。
+
+- **下载方式**：发邮件到 `tohuangjia@gmail.com`，或在极客时间课程评论区联系作者
+- **目录结构**：`第1章-登高望远/`、`第2章-温故知新/` …… `第10章-炉火纯青/`
+- **覆盖范围**：CLAUDE.md / Skills / SubAgents / Hooks / MCP / Headless / Agent SDK / Plugins 全部章节代码与配置示例
 
 ---
 
