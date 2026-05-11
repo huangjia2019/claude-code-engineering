@@ -1,0 +1,9 @@
+Enterprise CLAUDE.md    ← 企业级：全组织统一规范（管理员设置）
+    ↓
+~/.claude/CLAUDE.md     ← 用户级：你的个人偏好
+    ↓
+./CLAUDE.md             ← 项目级：团队共享的项目约定
+    ↓
+.claude/rules/*.md      ← 规则级：模块化的细粒度规则
+    ↓
+.claude.local.md        ← 本地级：不提交到 Git 的私人笔记

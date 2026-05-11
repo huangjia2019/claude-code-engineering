@@ -1,0 +1,5 @@
+{
+  "type": "command",
+  "command": "./.claude/hooks/check-security.sh",
+  "timeout": 30
+}

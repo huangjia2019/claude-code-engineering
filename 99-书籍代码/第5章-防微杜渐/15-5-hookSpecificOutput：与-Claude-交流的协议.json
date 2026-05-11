@@ -1,0 +1,6 @@
+{
+  "continue": false,
+  "stopReason": "检测到安全违规，会话已终止",
+  "suppressOutput": false,
+  "systemMessage": "警告：此操作已被安全策略拦截"
+}

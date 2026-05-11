@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/workspace"],
+      "env": {}
+    },
+    "company-jira": {
+      "type": "http",
+      "url": "https://jira.company.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${JIRA_TOKEN}"
+      }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "DATABASE_URL": "${DB_URL:-postgresql://localhost:5432/mydb}"
+      }
+    }
+  }
+}

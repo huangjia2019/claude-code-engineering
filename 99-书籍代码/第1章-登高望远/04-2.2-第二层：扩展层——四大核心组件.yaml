@@ -1,0 +1,14 @@
+---
+name: code-reviewing
+description: >
+  Review code for best practices and potential issues.
+  Use when the user asks for code review or mentions
+  reviewing changes.
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+---
+
+# Code Review Guidelines
+你是一个专业的代码审查员...

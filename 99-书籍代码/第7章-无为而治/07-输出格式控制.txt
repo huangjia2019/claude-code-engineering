@@ -1,0 +1,5 @@
+{"type":"system","subtype":"init","session_id":"...","model":"claude-sonnet-4-6","tools":["Read","Grep","Glob"]}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"正在分析..."}]}}
+{"type":"user","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"...","content":"..."}]}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"分析完成。"}]}}
+{"type":"result","subtype":"success","total_cost_usd":0.03,"result":"最终结果"}

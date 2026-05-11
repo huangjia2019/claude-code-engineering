@@ -1,0 +1,6 @@
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+      options: --read-only --tmpfs /tmp --network none

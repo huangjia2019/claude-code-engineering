@@ -1,0 +1,8 @@
+MCP 之前（N×M）：                    MCP 之后（N+M）：
+
+Claude ──→ GitHub 适配器             Claude ─┐
+Claude ──→ Jira 适配器                       ├── MCP 协议 ──┬── GitHub MCP Server
+Claude ──→ 数据库适配器              ChatGPT ─┤              ├── Jira MCP Server
+ChatGPT ──→ GitHub 适配器            Cursor  ─┘              ├── 数据库 MCP Server
+ChatGPT ──→ Jira 适配器                                      └── Notion MCP Server
+ChatGPT ──→ 数据库适配器

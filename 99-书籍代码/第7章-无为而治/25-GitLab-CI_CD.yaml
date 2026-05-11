@@ -1,0 +1,17 @@
+# .gitlab-ci.yml
+claude-review:
+  image: node:20
+  variables:
+    ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+  script:
+    - npm install -g @anthropic-ai/claude-code
+    - |
+      claude -p "审查此 MR 的代码变更" \
+        --output-format json \
+        --max-turns 10 \
+        --max-budget-usd 0.50 \
+        --allowedTools "Read,Grep,Glob" > review.json
+    - cat review.json | jq -r '.result'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"

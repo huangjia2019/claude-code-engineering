@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "my-todo": {
+      "command": "node",
+      "args": ["./mcp-server/build/index.js"]
+    }
+  }
+}

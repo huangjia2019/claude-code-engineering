@@ -1,0 +1,11 @@
+SubAgent（.md 文件）负责：
+  • WHO: "You are an API documentation specialist"
+  • WHAT: "Generate API documentation for Express routes"
+  • WHERE: "Write to docs/api/"
+  • OUTPUT: "Return summary with route count"
+
+Skill（SKILL.md + 附属文件）负责：
+  • HOW: "Step 1: Run detect-routes.py → Step 2: Analyze"
+  • WITH WHAT: scripts/detect-routes.py, templates/api-doc.md
+  • BY WHAT STANDARD: "Check auth middleware, mark with 🔒"
+  • QUALITY: "All routes documented, schemas match code"

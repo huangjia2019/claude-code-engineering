@@ -1,0 +1,5 @@
+需求：将驼峰命名转换为蛇形命名
+
+示例：
+输入: "getUserName" → 输出: "get_user_name"
+输入: "HTTPRequest" → 输出: "http_request"

@@ -1,0 +1,13 @@
+用户说："整理本周 Sprint 状态"
+    │
+    ▼
+Claude 识别到 sprint-manager Skill
+    │
+    ▼
+按照 Skill 指令，调用 Jira MCP 服务器：
+  1. jira.get_sprint(project="BACKEND", status="active")
+  2. jira.list_issues(sprint_id, priority="P1")
+  3. jira.get_issue_details(issue_keys)
+    │
+    ▼
+按照 Skill 定义的输出格式，生成 Sprint 状态报告

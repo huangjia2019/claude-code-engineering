@@ -1,0 +1,9 @@
+文件                    Token 数
+───────────────────────────────
+SKILL.md（主文件）        800
+reference/revenue.md     1500
+reference/costs.md       1200
+reference/profitability.md 1000
+templates/report.md       800
+───────────────────────────────
+总计                     5300

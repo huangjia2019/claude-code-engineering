@@ -1,0 +1,9 @@
+{
+  "name": "react-workflow",
+  "version": "1.2.0",
+  "description": "Complete React/TypeScript development workflow for Claude Code",
+  "author": "YourName",
+  "repository": "https://github.com/yourname/react-workflow",
+  "license": "MIT",
+  "keywords": ["react", "typescript", "workflow", "code-review"]
+}

@@ -1,0 +1,18 @@
+team-toolkit/
+├── .claude-plugin/
+│   └── plugin.json
+├── commands/
+│   ├── review.md              # 代码审查命令
+│   └── test.md                # 测试运行命令
+├── agents/
+│   ├── security-scanner.md    # 安全扫描子智能体
+│   └── quick-fix.md           # 快速修复子智能体
+├── skills/
+│   └── react-patterns/
+│       └── SKILL.md           # React 最佳实践
+├── hooks/
+│   ├── hooks.json             # Hook 配置
+│   ├── check-bash.sh          # Bash 命令安全检查
+│   └── auto-format.sh         # 自动格式化
+├── .mcp.json                  # 数据库和 GitHub 连接
+└── README.md

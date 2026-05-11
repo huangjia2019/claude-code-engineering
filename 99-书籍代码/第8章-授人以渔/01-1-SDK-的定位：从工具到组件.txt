@@ -1,0 +1,5 @@
+CLAUDE.md → Skills → Hooks → MCP → Headless → Agent SDK
+   │          │         │        │        │         │
+ 配置文件    YAML     JSON    协议配置   CLI参数    代码
+   │          │         │        │        │         │
+  项目级    技能级    事件级   工具级   任务级     应用级

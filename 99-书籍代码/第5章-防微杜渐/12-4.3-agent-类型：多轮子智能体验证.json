@@ -1,0 +1,5 @@
+{
+  "type": "agent",
+  "prompt": "检查所有修改的文件是否通过了单元测试。运行测试套件并验证结果。$ARGUMENTS",
+  "timeout": 120
+}

@@ -1,0 +1,8 @@
+自动委派示例：
+用户：帮我审查 src/payment/ 目录下的代码变更
+Claude：好的，我将把审查任务委派给代码审查专家。
+       [启动子智能体: code-reviewer]
+       ...
+       审查完毕。发现 2 个问题：
+       1. [严重] src/payment/processor.ts:45 存在 SQL 注入风险
+       2. [次要] src/payment/validator.ts:23 缺少边界值校验

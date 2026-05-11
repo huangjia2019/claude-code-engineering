@@ -1,0 +1,21 @@
+react-workflow/                       ← Plugin 根目录
+├── .claude-plugin/
+│   └── plugin.json                   ← 必需：Plugin 清单
+├── commands/                         ← 斜杠命令
+│   ├── review.md
+│   └── deploy.md
+├── agents/                           ← 子智能体
+│   ├── security-scanner.md
+│   └── quick-fix.md
+├── skills/                           ← Skills
+│   └── react-patterns/
+│       ├── SKILL.md
+│       └── chapters/
+│           ├── hooks.md
+│           └── performance.md
+├── hooks/                            ← Hooks 配置
+│   ├── hooks.json
+│   ├── check-bash.sh
+│   └── auto-format.sh
+├── .mcp.json                         ← MCP 服务器引用
+└── README.md                         ← 文档

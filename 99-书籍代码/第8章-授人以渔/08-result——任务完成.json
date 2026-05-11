@@ -1,0 +1,16 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "session_id": "550e8400-...",
+  "num_turns": 5,
+  "total_cost_usd": 0.0342,
+  "duration_ms": 12345,
+  "duration_api_ms": 10000,
+  "usage": {
+    "input_tokens": 5000,
+    "output_tokens": 1500,
+    "cache_read_input_tokens": 3000
+  },
+  "result": "架构分析：src/auth/ 采用分层设计...",
+  "structured_output": null
+}

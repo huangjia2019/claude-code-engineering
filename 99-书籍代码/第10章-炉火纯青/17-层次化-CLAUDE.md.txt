@@ -1,0 +1,8 @@
+加载顺序（从高到低）：
+
+1. 受管策略    /etc/claude-code/CLAUDE.md（Linux）
+2. 项目根目录  ./CLAUDE.md 或 ./.claude/CLAUDE.md
+3. 模块化规则  ./.claude/rules/*.md（可按路径过滤）
+4. 用户全局    ~/.claude/CLAUDE.md
+5. 本地覆盖    ./CLAUDE.local.md（gitignored）
+6. 自动记忆    ~/.claude/projects/<project>/memory/

@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "ConfigChange": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
+        "command": "echo '[AUDIT] Config changed: $CONFIG_FILE' >> ~/.claude/config-audit.log"
+      }]
+    }]
+  }
+}

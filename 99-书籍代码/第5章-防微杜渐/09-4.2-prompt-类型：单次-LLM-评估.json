@@ -1,0 +1,6 @@
+{
+  "type": "prompt",
+  "prompt": "评估这段代码修改是否引入了安全漏洞。$ARGUMENTS",
+  "model": "claude-haiku-4-5",
+  "timeout": 30
+}

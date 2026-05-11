@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint)",
+      "Bash(npm run test *)",
+      "Bash(git commit *)"
+    ],
+    "deny": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Bash(git push --force *)"
+    ],
+    "ask": [
+      "Bash(git push *)"
+    ]
+  }
+}

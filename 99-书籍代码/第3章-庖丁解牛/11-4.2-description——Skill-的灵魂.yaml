@@ -1,0 +1,15 @@
+# ❌ 太模糊——Claude 无法判断何时使用
+description: Helps with projects.
+
+# ❌ 太技术化，缺少用户视角的触发词
+description: Implements the Project entity model with hierarchical relationships.
+
+# ❌ 只写了做什么，没写触发场景
+description: Generates API documentation.
+
+# ✅ 正确写法——清晰、包含触发场景、有具体能力描述
+description: Generate API documentation from Express, FastAPI, or
+  Spring Boot source code. Use when user asks to "write API docs",
+  "document endpoints", "create OpenAPI specs", or mentions
+  "Swagger". Supports route detection, request/response schema
+  extraction, and authentication requirement marking.

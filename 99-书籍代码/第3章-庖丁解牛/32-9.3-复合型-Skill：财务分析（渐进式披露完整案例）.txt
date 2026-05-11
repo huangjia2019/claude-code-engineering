@@ -1,0 +1,10 @@
+financial-analyzing/
+├── SKILL.md                    # 主文件：路由 + 核心流程
+├── reference/
+│   ├── revenue.md             # 收入分析公式和基准
+│   ├── costs.md               # 成本分析公式和基准
+│   └── profitability.md       # 盈利分析公式和基准
+├── templates/
+│   └── analysis_report.md     # 分析报告模板
+└── scripts/
+    └── calculate_ratios.py    # 财务比率计算脚本

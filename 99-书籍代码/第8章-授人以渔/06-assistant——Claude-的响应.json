@@ -1,0 +1,10 @@
+{
+  "type": "assistant",
+  "message": {
+    "role": "assistant",
+    "content": [
+      {"type": "text", "text": "让我先看看目录结构..."},
+      {"type": "tool_use", "id": "toolu_xxx", "name": "Glob", "input": {"pattern": "src/auth/**/*"}}
+    ]
+  }
+}

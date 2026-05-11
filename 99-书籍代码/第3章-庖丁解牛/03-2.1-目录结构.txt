@@ -1,0 +1,9 @@
+api-doc-generator/           ← Skill 名称（kebab-case，即短横线分隔）
+├── SKILL.md                 ← 必需：主技能文件（大小写精确匹配）
+├── scripts/                 ← 可选：可执行脚本
+│   └── detect-routes.py
+├── reference/               ← 可选：按需加载的参考文档
+│   ├── openapi-patterns.md
+│   └── error-codes.md
+└── templates/               ← 可选：输出模板
+    └── endpoint-doc.md

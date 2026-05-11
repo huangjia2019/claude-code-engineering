@@ -1,0 +1,9 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "allow",
+    "updatedInput": {
+      "command": "rm -rf /tmp/test --dry-run"
+    }
+  }
+}

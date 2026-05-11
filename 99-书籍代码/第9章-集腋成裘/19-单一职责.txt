@@ -1,0 +1,7 @@
+好的设计：
+  react-workflow     → React 开发工作流
+  security-scanner   → 安全扫描
+  db-tools          → 数据库操作
+
+不好的设计：
+  everything-plugin  → 什么都有，什么都不精

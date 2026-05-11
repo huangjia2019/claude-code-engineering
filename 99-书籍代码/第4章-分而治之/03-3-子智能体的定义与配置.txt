@@ -1,0 +1,7 @@
+your-project/
+└── .claude/
+    └── agents/
+        ├── code-reviewer.md      ← 代码审查子智能体
+        ├── test-runner.md        ← 测试运行子智能体
+        ├── log-analyzer.md       ← 日志分析子智能体
+        └── bug-locator.md        ← Bug 定位子智能体

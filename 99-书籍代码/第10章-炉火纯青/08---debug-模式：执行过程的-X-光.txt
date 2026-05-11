@@ -1,0 +1,18 @@
+[DEBUG] Starting session: abc123
+[DEBUG] Model: claude-sonnet-4-6
+
+[DEBUG] Turn 1
+[DEBUG] User message: "列出当前目录的文件"
+[DEBUG] Tokens: input=150, output=0
+
+[DEBUG] Tool call: Glob
+[DEBUG]   pattern: "*"
+[DEBUG]   path: "."
+
+[DEBUG] Tool result: Glob
+[DEBUG]   files: ["file1.js", "file2.py", ...]
+[DEBUG]   duration: 45ms
+
+[DEBUG] Turn 1 complete
+[DEBUG] Total tokens: 500
+[DEBUG] Estimated cost: $0.0015

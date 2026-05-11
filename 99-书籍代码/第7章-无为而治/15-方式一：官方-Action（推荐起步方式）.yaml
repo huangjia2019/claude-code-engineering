@@ -1,0 +1,49 @@
+# .github/workflows/claude-review.yml
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+# 同一 PR 的新提交取消旧的运行——避免浪费
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    # 只在 PR 相关事件或 @claude 提及时触发
+    if: |
+      github.event_name == 'pull_request' ||
+      contains(github.event.comment.body, '@claude')
+
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 完整历史，用于 diff 分析
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            审查这个 PR 的代码变更，重点检查：
+            1. 安全漏洞（SQL 注入、XSS、敏感信息硬编码）
+            2. 未处理的错误情况和边界条件
+            3. 性能问题（N+1 查询、内存泄漏风险）
+            输出格式：
+            ## 审查报告
+            ### 🔴 Critical（必须修复）
+            ### 🟡 Warning（建议修复）
+            ### 🔵 Suggestion（可选优化）
+          claude_args: >-
+            --allowedTools "Read,Grep,Glob"
+            --max-turns 10
+            --model claude-sonnet-4-6

@@ -1,0 +1,8 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": "此命令试图删除受保护的系统目录",
+    "additionalContext": "受保护的路径模式：/etc, /usr, /var"
+  }
+}

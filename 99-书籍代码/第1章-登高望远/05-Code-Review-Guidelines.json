@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "command": "python .claude/hooks/safety_check.py",
+        "blocking": true
+      }
+    ]
+  }
+}

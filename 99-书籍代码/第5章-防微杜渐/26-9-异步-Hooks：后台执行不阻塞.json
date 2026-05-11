@@ -1,0 +1,6 @@
+{
+  "type": "command",
+  "command": "./.claude/hooks/run-tests-background.sh",
+  "async": true,
+  "timeout": 300
+}

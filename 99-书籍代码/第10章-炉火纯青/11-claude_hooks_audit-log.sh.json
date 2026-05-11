@@ -1,0 +1,8 @@
+{
+  "hooks": {
+    "PostToolUse": [{
+      "matcher": "*",
+      "hooks": [{"type": "command", "command": "bash .claude/hooks/audit-log.sh"}]
+    }]
+  }
+}

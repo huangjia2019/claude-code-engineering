@@ -1,0 +1,14 @@
+// /etc/claude-code/managed-settings.json (Linux)
+{
+  "disableBypassPermissionsMode": "disable",
+  "allowManagedPermissionRulesOnly": true,
+  "allowManagedHooksOnly": true,
+  "permissions": {
+    "deny": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+- name: Run Claude Analysis
+  env:
+    ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+    BASH_DEFAULT_TIMEOUT_MS: "300000"
+  run: |
+    npx @anthropic-ai/claude-code -p "$PROMPT" \
+      --output-format json \
+      --max-turns 10 \
+      --max-budget-usd 1.00 \
+      --allowedTools "Read,Grep,Glob" \
+      --model claude-sonnet-4-6 \
+      --fallback-model haiku \
+      --append-system-prompt "遵循项目 CLAUDE.md 中的审查规范。"

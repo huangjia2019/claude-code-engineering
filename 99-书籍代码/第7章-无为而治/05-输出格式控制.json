@@ -1,0 +1,18 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "is_error": false,
+  "duration_ms": 12345,
+  "duration_api_ms": 10000,
+  "num_turns": 5,
+  "total_cost_usd": 0.0342,
+  "usage": {
+    "input_tokens": 5000,
+    "output_tokens": 1500,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 3000
+  },
+  "result": "发现 2 个 Critical 问题：\n1. SQL 注入风险...",
+  "structured_output": null
+}

@@ -1,0 +1,9 @@
+文件                              共享(git)  用途
+──────────────────────────────────────────────────────────
+.claude/settings.json             是         团队共享配置
+.claude/settings.local.json       否         个人覆盖设置
+.claude/agents/*.md               是         团队子智能体
+.claude/skills/*.md               是         团队技能
+.claude/rules/*.md                是         模块化规则
+CLAUDE.md                         是         项目记忆
+CLAUDE.local.md                   否         个人偏好

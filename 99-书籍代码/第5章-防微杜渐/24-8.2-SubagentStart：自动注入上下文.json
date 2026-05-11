@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SubagentStart": [
+      {
+        "matcher": "code-reviewer",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SubagentStart\",\"additionalContext\":\"团队编码规范：使用 camelCase 命名，行长上限 100 字符，公共 API 必须有 JSDoc 注释\"}}'"
+          }
+        ]
+      }
+    ]
+  }
+}

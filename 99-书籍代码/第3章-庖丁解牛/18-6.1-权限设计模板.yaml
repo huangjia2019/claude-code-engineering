@@ -1,0 +1,27 @@
+# 审计类 Skill：严格只读
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+
+# 生成类 Skill：可写不可改
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Write
+
+# 分析类 Skill：只读 + 特定脚本
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash(python:*)
+
+# 执行类 Skill：受控命令
+allowed-tools:
+  - Read
+  - Bash(git status:*)
+  - Bash(git add:*)
+  - Bash(git commit:*)
+  - Bash(npm test:*)

@@ -1,0 +1,62 @@
+name: Multi-Stage AI Pipeline
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  # 阶段一：快速格式检查（用便宜的模型）
+  lint-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Format Check
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+        run: |
+          npx @anthropic-ai/claude-code -p "检查 src/ 下的代码是否符合项目编码规范" \
+            --model claude-haiku-4-5 \
+            --max-turns 3 \
+            --max-budget-usd 0.05 \
+            --allowedTools "Read,Grep,Glob" \
+            --output-format text
+
+  # 阶段二：深度安全审查（用最强模型）
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: lint-check  # 格式检查通过后再做安全扫描
+    steps:
+      - uses: actions/checkout@v4
+      - name: Security Scan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+        run: |
+          npx @anthropic-ai/claude-code -p "深度安全扫描，重点检查 OWASP Top 10" \
+            --model claude-sonnet-4-6 \
+            --append-system-prompt "你是应用安全专家，只关注安全漏洞。" \
+            --max-turns 10 \
+            --max-budget-usd 1.00 \
+            --allowedTools "Read,Grep,Glob" \
+            --output-format json \
+            --json-schema '{"type":"object","properties":{"vulnerabilities":{"type":"array","items":{"type":"object","properties":{"severity":{"type":"string"},"description":{"type":"string"},"file":{"type":"string"}},"required":["severity","description"]}}},"required":["vulnerabilities"]}' \
+            > security-report.json
+
+  # 阶段三：测试覆盖分析
+  coverage-check:
+    runs-on: ubuntu-latest
+    needs: lint-check
+    steps:
+      - uses: actions/checkout@v4
+      - name: Coverage Analysis
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+        run: |
+          npx @anthropic-ai/claude-code -p "分析哪些代码路径缺少测试覆盖" \
+            --model claude-sonnet-4-6 \
+            --max-turns 8 \
+            --max-budget-usd 0.50 \
+            --allowedTools "Read,Grep,Glob" \
+            --output-format text

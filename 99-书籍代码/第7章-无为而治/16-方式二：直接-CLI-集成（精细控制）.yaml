@@ -1,0 +1,87 @@
+name: Advanced AI Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'src/**'    # 只在 src 目录变更时运行
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Get changed files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "files=$(echo "$FILES" | tr '\n' ' ')" >> $GITHUB_OUTPUT
+          echo "count=$(echo "$FILES" | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Run Claude Review
+        id: review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+        run: |
+          claude -p "审查以下 PR 变更文件：
+          ${{ steps.changed.outputs.files }}
+
+          重点检查安全漏洞、逻辑错误、性能问题。
+          对每个问题给出文件名和行号。" \
+            --output-format json \
+            --max-turns 10 \
+            --max-budget-usd 0.50 \
+            --model claude-sonnet-4-6 \
+            --allowedTools "Read,Grep,Glob" > review.json
+
+          # 提取结果和成本
+          RESULT=$(jq -r '.result' review.json)
+          COST=$(jq -r '.total_cost_usd' review.json)
+          IS_ERROR=$(jq -r '.is_error' review.json)
+
+          echo "cost=$COST" >> $GITHUB_OUTPUT
+          echo "is_error=$IS_ERROR" >> $GITHUB_OUTPUT
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Post Review Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cost = '${{ steps.review.outputs.cost }}';
+            const result = `${{ steps.review.outputs.result }}`;
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 Claude Code Review\n\n${result}\n\n---\n*Cost: $${cost} | Automated by Claude Code*`
+            });
+
+      - name: Gate on critical issues
+        run: |
+          RESULT="${{ steps.review.outputs.result }}"
+          if echo "$RESULT" | grep -qi "critical"; then
+            echo "::error::Critical issues found"
+            exit 1
+          fi

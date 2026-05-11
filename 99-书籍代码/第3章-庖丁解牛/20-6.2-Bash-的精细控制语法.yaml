@@ -1,0 +1,9 @@
+# ✅ 精确授权——只允许 git 的特定子命令
+allowed-tools:
+  - Bash(git status:*)
+  - Bash(git add:*)
+  - Bash(git commit:*)
+
+# ❌ 过于宽泛——等于授权所有 shell 命令
+allowed-tools:
+  - Bash(*)

@@ -1,0 +1,53 @@
+---
+name: api-doc-generator
+  # 唯一标识符，最多 64 字符
+  # 省略时使用目录名
+
+description: Generate API documentation from source code. Use when
+  the user asks to "write API docs", "document endpoints", or
+  "create OpenAPI specs". Supports Express, FastAPI, and Spring Boot.
+  # 触发描述，最多 1024 字符
+  # 省略时使用 SKILL.md 正文的第一段
+
+argument-hint: "[source directory] [output format]"
+  # 参数提示，在 / 菜单中显示
+  # 帮助用户了解该 Skill 接受什么输入
+
+disable-model-invocation: true
+  # 为 true 时 Claude 不能自动调用
+  # 只能由用户通过 /skill-name 手动触发
+  # 默认：false
+
+user-invocable: false
+  # 为 false 时从 / 菜单中隐藏
+  # Claude 仍可自动调用
+  # 默认：true
+
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Write
+  - Bash(python:*)
+  # 工具白名单，精确控制 Skill 执行时的能力边界
+
+model: haiku
+  # 指定该 Skill 使用的模型
+  # 简单任务用 haiku 更快更省
+
+context: fork
+  # 设为 fork 时在隔离的子智能体中执行
+  # 不会污染主对话上下文
+
+agent: Explore
+  # 当 context: fork 时指定子智能体类型
+  # 选项：Explore、Plan、general-purpose 或自定义 Agent
+
+hooks:
+  PreToolUse:
+    - matcher: Bash
+      hooks:
+        - command: echo "$TOOL_INPUT" >> audit.log
+  # Skill 生命周期内的事件钩子
+  # 仅在 Skill 激活期间生效
+---

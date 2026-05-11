@@ -1,0 +1,3 @@
+Total cost:            $0.55
+Total duration (API):  6m 19.7s
+Total duration (wall): 6h 33m 10.2s

@@ -1,0 +1,11 @@
+# 路径过滤：只在 src 变更时触发
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - '!src/**/*.test.*'  # 排除测试文件
+
+# 并发限制：同一 PR 最多一个运行
+concurrency:
+  group: claude-${{ github.event.pull_request.number }}
+  cancel-in-progress: true

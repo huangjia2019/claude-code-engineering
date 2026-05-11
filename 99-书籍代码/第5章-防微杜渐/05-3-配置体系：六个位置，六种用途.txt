@@ -1,0 +1,11 @@
+企业策略配置（managed-settings.json）         → 组织强制规范
+    ↓
+项目配置（.claude/settings.json）             → 团队共享约定
+    ↓
+项目本地配置（.claude/settings.local.json）   → 个人本地覆盖
+    ↓
+用户全局配置（~/.claude/settings.json）       → 跨项目个人偏好
+    ↓
+插件内置 Hooks（hooks/hooks.json）            → 随插件分发
+    ↓
+子智能体 frontmatter 内联 Hooks              → 仅在该子智能体运行期间生效

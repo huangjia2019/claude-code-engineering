@@ -1,0 +1,7 @@
+用户请求 → SKILL.md（路由判断） → 目标资源
+                │
+                ├─ "收入相关" → reference/revenue.md
+                ├─ "成本相关" → reference/costs.md
+                ├─ "利润相关" → reference/profitability.md
+                ├─ "要报告"   → templates/analysis_report.md
+                └─ "要计算"   → scripts/calculate_ratios.py
