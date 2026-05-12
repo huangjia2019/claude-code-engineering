@@ -44,42 +44,44 @@
 
 ## 勘误与改进
 
-Claude Code 本身在 2025–2026 高速迭代，部分 API、字段名、配置结构在书稿付印后发生了变化，也有少量我在书稿中写错或表述不严谨的地方。下表所有条目都已**对照官方文档与实际跑过的 SDK 代码逐条核实**（一些早期 issue 列表里看似有问题但实际属于真实功能的，已经撤回，不在此表中）。
+Claude Code 本身在 2025–2026 高速迭代，部分 API、字段名、配置结构在书稿付印后发生了变化，也有少量是我在书稿中写错或表述不严谨的地方，不是API迭代问题。下表所有条目都已**对照官方文档与实际跑过的 SDK 代码逐条核实**。
 
 📮 **欢迎读者提出问题或纠错** → [在本仓库提 Issue](https://github.com/huangjia2019/claude-code-engineering/issues)
 
 > 严重程度说明：
-> - 🔴 **Critical**：代码按书中写法**几乎肯定跑不通**，必须改
-> - 🟠 **High**：代码会跑，但**结果错误或与设计意图相反**
-> - 🟡 **Medium**：会**静默地以错误方式工作**，或读者可能找不到对应的文件/字段
+> - 🔴 **Critical**：代码必须修改
+> - 🟠 **High**：代码会跑，但结果错误或与设计意图相反
+> - 🟡 **Medium**：会以不标准的方式工作，或CC找不到对应的文件/字段
+
+**下面列出的是第1，2次印刷时的错误，会在第3次印刷时改正**
 
 ### 第 1 章 · 登高望远
 
-| 严重 | 位置 | 错误 | 修正 |
+| 严重等级 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
 | 🟠 High | §1.2.2 Hooks 配置 JSON 示例 | 用扁平结构 `{matcher, command, blocking: true}`，且 `blocking` 字段不存在，照抄会被 Claude Code 静默忽略 | 改为嵌套结构 `{matcher, hooks: [{type: "command", command: "..."}]}`；阻断由脚本退出码 2 实现，删除 `blocking` 字段 |
-| 🟠 High | §1.2.4 Python SDK 示例 | `import claude_code` 和 `claude_code.query(...)` 不可运行，包名和调用方式都不对 | 正确写法：`from claude_agent_sdk import query, ClaudeAgentOptions`，且 `query()` 是 async generator，需要 `async for msg in query(...)` 消费 |
+| 🔴 **Critical** | §1.2.4 Python SDK 示例 | `import claude_code` 和 `claude_code.query(...)` 不可运行，包名和调用方式都不对 | 正确写法：`from claude_agent_sdk import query, ClaudeAgentOptions`，且 `query()` 是 async generator，需要 `async for msg in query(...)` 消费 |
 | 🟡 Medium | §1.2.1 记忆层级图 | 写作 `.claude.local.md`（前导点 + 全小写） | 实际文件名是 **`CLAUDE.local.md`**（大写 CLAUDE，无前导点），放在项目根目录 |
 
 ### 第 5 章 · 防微杜渐（Hooks）
 
 | 严重 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
-| 🟠 High | §5.10.1 Hook 环境变量表（第 767-771 行）+ §5.3 `prettier` 示例（第 186 行） | 表里列出的 `CLAUDE_FILE_PATH`、`CLAUDE_TOOL_NAME`、`CLAUDE_SESSION_ID`、`CLAUDE_NOTIFICATION` 这四个环境变量**不存在**。`prettier --write "$CLAUDE_FILE_PATH"` 实际执行的是 `prettier --write ""`（空字符串） | 这四个字段实际通过 **stdin JSON** 传递。Hook 脚本应该：`INPUT=$(cat); FILE=$(echo "$INPUT" \| jq -r '.tool_input.file_path'); prettier --write "$FILE"`。Claude Code 真正暴露的 env 变量是 `CLAUDE_PROJECT_DIR` / `CLAUDE_PLUGIN_ROOT` / `CLAUDE_PLUGIN_DATA` / `CLAUDE_ENV_FILE` / `CLAUDE_EFFORT` / `CLAUDE_CODE_REMOTE`，其余字段都从 stdin 拿 |
+| 🟠 High | §5.10.1 Hook 环境变量表 + §5.3 `prettier` 示例 | 表里列出的 `CLAUDE_FILE_PATH`、`CLAUDE_TOOL_NAME`、`CLAUDE_SESSION_ID`、`CLAUDE_NOTIFICATION` 这四个环境变量**不存在**。`prettier --write "$CLAUDE_FILE_PATH"` 实际执行的是 `prettier --write ""`（空字符串） | 这四个字段实际通过 **stdin JSON** 传递。Hook 脚本应该：`INPUT=$(cat); FILE=$(echo "$INPUT" \| jq -r '.tool_input.file_path'); prettier --write "$FILE"`。Claude Code 真正暴露的 env 变量是 `CLAUDE_PROJECT_DIR` / `CLAUDE_PLUGIN_ROOT` / `CLAUDE_PLUGIN_DATA` / `CLAUDE_ENV_FILE` / `CLAUDE_EFFORT` / `CLAUDE_CODE_REMOTE`，其余字段都从 stdin 拿 |
 
 ### 第 6 章 · 海纳百川（MCP）
 
 | 严重 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
-| 🟠 High | §6.4.3 表格（第 165 行）+ §6.4 关于 `.claude/settings.local.json` 存放凭证的说法 | 写"用户级 MCP 在 `~/.claude/` 目录"——但 Claude Code 不识别这个位置；以及"凭证放在 `.claude/settings.local.json`"——但 `mcpServers` 不是 settings.json 的合法顶级键，写进去会被静默忽略 | 用户级 MCP 在 **`~/.claude.json`** 顶级 `mcpServers`；项目级在 `<项目根>/.mcp.json`；项目私有（含凭证）在 `~/.claude.json` 的 `projects.<项目路径>.mcpServers`。最简单的做法是 `claude mcp add --scope user/project/local`，CLI 写到正确位置。注意 `claude mcp add` 默认 scope 是 `local` 不是 `user` |
+| 🟠 High | §6.4.3 表格 + §6.4 关于 `.claude/settings.local.json` 存放凭证的说法 | 写"用户级 MCP 在 `~/.claude/` 目录"——但 Claude Code 不识别这个位置；以及"凭证放在 `.claude/settings.local.json`"——但 `mcpServers` 不是 settings.json 的合法顶级键，写进去会被静默忽略 | 用户级 MCP 在 **`~/.claude.json`** 顶级 `mcpServers`；项目级在 `<项目根>/.mcp.json`；项目私有（含凭证）在 `~/.claude.json` 的 `projects.<项目路径>.mcpServers`。最简单的做法是 `claude mcp add --scope user/project/local`，CLI 写到正确位置。注意 `claude mcp add` 默认 scope 是 `local` 不是 `user` |
 
 ### 第 7 章 · 无为而治（Headless）
 
 | 严重 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
-| 🔴 **Critical** | §7.4 GitHub Actions 完整示例最后一步 `grep -qi "critical"`（第 428 行） | 用 `grep -qi "critical"` 作为"是否有严重问题"的 verdict 检查。`-i` 大小写不敏感 + "critical" 是 PR review 输出里**几乎必然出现的词**（"no critical issues"、"non-critical"、prompt 自身提示 critical 类问题），导致**workflow 几乎每次都被自己的检查触发 exit 1，看上去像永远在失败** | 让 Claude 在 prompt 末尾输出唯一 sentinel token，例如 `<VERDICT>request_changes</VERDICT>` / `<VERDICT>approved</VERDICT>`，下游用 `grep -qF "<VERDICT>request_changes</VERDICT>"` 判定。修复版可直接参考本仓库 [`08-Headless/projects/01-github-actions/.github/workflows/pr-review.yml`](../08-Headless/projects/01-github-actions/.github/workflows/pr-review.yml) |
-| 🟠 High | §7.4 同一示例 `Post Review Comment` 步骤（第 416 行） | `const result = \`${{ steps.review.outputs.result }}\`;`——把 GitHub Actions 多行 markdown 输出**直接拼进 JS 模板字面量**。Code Review 输出常含反引号代码块和 `${...}`，会破坏 JS 解析 | 把 review 内容写到 `review.md` 文件，github-script 里 `fs.readFileSync('review.md', 'utf8')` 读取——不要走 `${{ }}` 拼字符串。多行变量通过 `env:` 块传递，避免命令注入 |
-| 🟡 Medium | §7.9 本地 `review.sh` 脚本（第 740 行） | `RESULT=$(claude -p ... )` 在 `set -e` 下**不会**因为 claude 失败而退出脚本——bash 的命令替换屏蔽了子命令退出码，会静默生成空报告 | 改为显式落盘 + 检查：`if ! claude -p "$PROMPT" ... > /tmp/result.txt 2> /tmp/err.txt; then cat /tmp/err.txt; exit 1; fi; RESULT=$(cat /tmp/result.txt)` |
+| 🔴 **Critical** | §7.4 GitHub Actions 完整示例最后一步 `grep -qi "critical"` | 用 `grep -qi "critical"` 作为"是否有严重问题"的 verdict 检查。`-i` 大小写不敏感 + "critical" 是 PR review 输出里**几乎必然出现的词**（"no critical issues"、"non-critical"、prompt 自身提示 critical 类问题），导致**workflow 几乎每次都被自己的检查触发 exit 1，看上去像永远在失败** | 让 Claude 在 prompt 末尾输出唯一 sentinel token，例如 `<VERDICT>request_changes</VERDICT>` / `<VERDICT>approved</VERDICT>`，下游用 `grep -qF "<VERDICT>request_changes</VERDICT>"` 判定。修复版可直接参考本仓库 [`08-Headless/projects/01-github-actions/.github/workflows/pr-review.yml`](../08-Headless/projects/01-github-actions/.github/workflows/pr-review.yml) |
+| 🟠 High | §7.4 同一示例 `Post Review Comment` 步骤 | `const result = \`${{ steps.review.outputs.result }}\`;`——把 GitHub Actions 多行 markdown 输出**直接拼进 JS 模板字面量**。Code Review 输出常含反引号代码块和 `${...}`，会破坏 JS 解析 | 把 review 内容写到 `review.md` 文件，github-script 里 `fs.readFileSync('review.md', 'utf8')` 读取——不要走 `${{ }}` 拼字符串。多行变量通过 `env:` 块传递，避免命令注入 |
+| 🟡 Medium | §7.9 本地 `review.sh` 脚本 | `RESULT=$(claude -p ... )` 在 `set -e` 下**不会**因为 claude 失败而退出脚本——bash 的命令替换屏蔽了子命令退出码，会静默生成空报告 | 改为显式落盘 + 检查：`if ! claude -p "$PROMPT" ... > /tmp/result.txt 2> /tmp/err.txt; then cat /tmp/err.txt; exit 1; fi; RESULT=$(cat /tmp/result.txt)` |
 
 ### 第 8 章 · 授人以渔（Agent SDK）
 
