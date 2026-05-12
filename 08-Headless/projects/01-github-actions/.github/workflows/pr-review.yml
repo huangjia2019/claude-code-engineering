@@ -46,101 +46,137 @@ jobs:
       - name: Get changed files
         id: changed
         run: |
-          # 获取 PR 中变更的文件
-          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          echo "Changed files:"
+          FILES=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" || true)
+          # grep -c . 在空字符串时返回 0；wc -l 会把空字符串错误地计成 1
+          COUNT=$(echo "$FILES" | grep -c . || true)
+
+          # 多行变量用 heredoc 形式写入 GITHUB_OUTPUT，sentinel 不能在文件名里出现
+          {
+            echo "files<<CHANGED_FILES_EOF_SENTINEL"
+            echo "$FILES"
+            echo "CHANGED_FILES_EOF_SENTINEL"
+          } >> "$GITHUB_OUTPUT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+          echo "Found $COUNT changed file(s):"
           echo "$FILES"
-
-          # 转为单行格式
-          FILES_INLINE=$(echo "$FILES" | tr '\n' ' ')
-          echo "files=$FILES_INLINE" >> $GITHUB_OUTPUT
-
-          # 统计数量
-          COUNT=$(echo "$FILES" | wc -l)
-          echo "count=$COUNT" >> $GITHUB_OUTPUT
 
       # 5. 运行 Claude 审查
       - name: Run Claude Review
         id: review
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # 通过 env 传变量，避免 ${{ }} 直接拼进 shell 导致的命令注入
+          CHANGED_FILES: ${{ steps.changed.outputs.files }}
+          CHANGED_COUNT: ${{ steps.changed.outputs.count }}
         run: |
-          # 创建审查提示
-          PROMPT="Review this Pull Request:
+          # 审查 prompt
+          # 关键：verdict 用唯一 sentinel token，不能用人话单词
+          # 否则下一步的 grep 会把 prompt 模板里列出的选项当成实际结论
+          PROMPT="Review this Pull Request.
 
-          ## Changed Files (${{ steps.changed.outputs.count }} files)
-          ${{ steps.changed.outputs.files }}
+          ## Changed Files (${CHANGED_COUNT} files)
+          ${CHANGED_FILES}
 
-          ## Review Guidelines
-          Please review for:
-          1. **Code Quality**: Clean code, proper naming, DRY principle
-          2. **Bugs**: Potential bugs, edge cases, error handling
-          3. **Security**: Security vulnerabilities, input validation
-          4. **Performance**: Inefficient code, unnecessary operations
-          5. **Best Practices**: Framework conventions, patterns
+          ## Review Focus
+          1. **Code Quality**: clean code, naming, DRY
+          2. **Bugs**: edge cases, error handling
+          3. **Security**: input validation, secrets, injection
+          4. **Performance**: inefficient code, N+1 queries
+          5. **Best Practices**: framework conventions
 
           ## Output Format
-          Provide feedback in this format:
+
+          Write your review as markdown:
 
           ### Summary
           [1-2 sentence overview]
 
           ### Issues Found
-          - 🔴 **Critical**: [description] (file:line)
-          - 🟡 **Warning**: [description] (file:line)
-          - 🔵 **Suggestion**: [description] (file:line)
+          List each issue as one bullet, with severity prefix and file:line:
+          - 🔴 **Critical**: <file>:<line> — <description>
+          - 🟡 **Warning**: <file>:<line> — <description>
+          - 🔵 **Suggestion**: <file>:<line> — <description>
 
           ### Recommendations
           [Actionable suggestions]
 
           ### Verdict
-          ✅ Approved / ⚠️ Needs Changes / ❌ Request Changes"
+          At the end, output EXACTLY ONE of these sentinel tokens on its own line.
+          Do not list multiple options — choose one:
+          <VERDICT>approved</VERDICT>
+          <VERDICT>needs_changes</VERDICT>
+          <VERDICT>request_changes</VERDICT>"
 
-          # 运行审查
-          claude -p "$PROMPT" \
+          # 运行审查；任何失败都显式报错，避免 set -e 静默挂掉
+          if ! claude -p "$PROMPT" \
             --output-format json \
             --max-turns 10 \
-            --allowedTools Read,Grep,Glob > review.json
+            --allowedTools Read,Grep,Glob > review.json 2> claude.err; then
+            echo "::error::Claude command failed"
+            echo "--- stderr ---"
+            cat claude.err
+            exit 1
+          fi
 
-          # 提取结果
-          RESULT=$(jq -r '.result' review.json)
-          echo "result<<EOF" >> $GITHUB_OUTPUT
-          echo "$RESULT" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # 校验 review.json 是合法 JSON
+          if ! jq empty review.json 2>/dev/null; then
+            echo "::error::review.json is not valid JSON"
+            echo "--- review.json ---"
+            cat review.json
+            exit 1
+          fi
+
+          # 提取 model 的 markdown 输出到独立文件，下游所有步骤都从文件读
+          # 避免通过 ${{ steps.review.outputs.result }} 把多行 markdown 拼进 shell / JS
+          jq -r '.result // empty' review.json > review.md
+
+          if [ ! -s review.md ]; then
+            echo "::error::Claude returned empty result"
+            echo "--- review.json ---"
+            cat review.json
+            exit 1
+          fi
+
+          echo "Review written to review.md ($(wc -l < review.md) lines)"
 
       # 6. 发布审查评论
       - name: Post Review Comment
         uses: actions/github-script@v7
         with:
           script: |
-            const review = `${{ steps.review.outputs.result }}`;
-
-            // 添加头部信息
-            const comment = `## 🤖 Claude Code Review
-
-            ${review}
-
-            ---
-            *Automated review by Claude Code*`;
-
-            // 发布评论
+            const fs = require('fs');
+            const review = fs.readFileSync('review.md', 'utf8');
+            // 把 verdict sentinel 从 PR 评论里隐藏，纯展示用
+            const visible = review.replace(/<VERDICT>[^<]+<\/VERDICT>/g, '').trim();
+            const body = [
+              '## 🤖 Claude Code Review',
+              '',
+              visible,
+              '',
+              '---',
+              '*Automated review by Claude Code*'
+            ].join('\n');
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment
+              body,
             });
 
-      # 7. 检查是否有关键问题
-      - name: Check for critical issues
+      # 7. 根据 verdict 决定 workflow 是否失败
+      - name: Enforce verdict
         run: |
-          RESULT="${{ steps.review.outputs.result }}"
-
-          if echo "$RESULT" | grep -q "🔴 \*\*Critical\*\*"; then
-            echo "::warning::Critical issues found in code review"
+          # 用唯一 sentinel token 判断，不会和 prompt 模板字符串冲突
+          if grep -q "<VERDICT>request_changes</VERDICT>" review.md; then
+            echo "::error::Code review verdict: request_changes"
+            exit 1
           fi
 
-          if echo "$RESULT" | grep -q "❌ Request Changes"; then
-            echo "::error::Code review requests changes"
-            exit 1
+          if grep -q "<VERDICT>needs_changes</VERDICT>" review.md; then
+            echo "::warning::Code review verdict: needs_changes (non-blocking)"
+          fi
+
+          if grep -qE "🔴 \*\*Critical\*\*" review.md; then
+            echo "::warning::Critical issues flagged in review (verdict not request_changes — review and merge with care)"
           fi
