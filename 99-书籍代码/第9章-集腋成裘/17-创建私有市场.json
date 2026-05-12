@@ -1,18 +1,26 @@
 {
   "name": "Our Company Plugins",
   "description": "内部插件市场",
+  "owner": {
+    "name": "DevTools Team",
+    "email": "devtools@our-company.com"
+  },
   "plugins": [
     {
       "name": "team-toolkit",
       "description": "团队标准开发工具包",
-      "repository": "https://github.com/our-company/team-toolkit",
-      "version": "2.0.0"
+      "source": {
+        "source": "github",
+        "repo": "our-company/team-toolkit"
+      }
     },
     {
       "name": "db-tools",
       "description": "数据库操作工具集",
-      "repository": "https://github.com/our-company/db-tools",
-      "version": "1.2.0"
+      "source": {
+        "source": "github",
+        "repo": "our-company/db-tools"
+      }
     }
   ]
 }

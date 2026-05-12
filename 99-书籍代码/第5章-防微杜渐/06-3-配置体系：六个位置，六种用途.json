@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "prettier --write \"$CLAUDE_FILE_PATH\""
+            "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r '.tool_input.file_path'); [ -n \"$FILE\" ] && prettier --write \"$FILE\""
           }
         ]
       }

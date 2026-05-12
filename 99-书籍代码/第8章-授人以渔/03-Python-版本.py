@@ -1,5 +1,6 @@
 import asyncio
-from claude_agent_sdk import query, ClaudeAgentOptions
+from claude_agent_sdk import query, ClaudeAgentOptions, AssistantMessage, ResultMessage
+
 
 async def analyze_code():
     options = ClaudeAgentOptions(
@@ -10,13 +11,15 @@ async def analyze_code():
 
     async for message in query(
         prompt="分析 src/auth/ 目录的实现架构",
-        options=options
+        options=options,
     ):
-        if message.type == "assistant":
+        # SDK 返回的是 dataclass 实例，没有 .type 属性，必须用 isinstance 判断
+        if isinstance(message, AssistantMessage):
             for block in message.content:
-                if hasattr(block, 'text'):
+                if hasattr(block, "text"):
                     print(block.text, end="", flush=True)
-        elif message.type == "result":
+        elif isinstance(message, ResultMessage):
             print(f"\n\n完成。费用：${message.total_cost_usd:.4f}")
+
 
 asyncio.run(analyze_code())
