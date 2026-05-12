@@ -53,6 +53,9 @@ Claude Code 本身在 2025–2026 高速迭代，部分 API、字段名、配置
 > - 🟠 **High**：代码会跑，但结果错误或与设计意图相反
 > - 🟡 **Medium**：会以不标准的方式工作，或CC找不到对应的文件/字段
 
+
+### 第1，2次印刷勘误
+
 **下面列出的是第1，2次印刷时的错误，会在第3次印刷时改正**
 
 ### 第 1 章 · 登高望远
@@ -65,19 +68,19 @@ Claude Code 本身在 2025–2026 高速迭代，部分 API、字段名、配置
 
 ### 第 5 章 · 防微杜渐（Hooks）
 
-| 严重 | 位置 | 错误 | 修正 |
+| 严重等级 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
 | 🟠 High | §5.10.1 Hook 环境变量表 + §5.3 `prettier` 示例 | 表里列出的 `CLAUDE_FILE_PATH`、`CLAUDE_TOOL_NAME`、`CLAUDE_SESSION_ID`、`CLAUDE_NOTIFICATION` 这四个环境变量**不存在**。`prettier --write "$CLAUDE_FILE_PATH"` 实际执行的是 `prettier --write ""`（空字符串） | 这四个字段实际通过 **stdin JSON** 传递。Hook 脚本应该：`INPUT=$(cat); FILE=$(echo "$INPUT" \| jq -r '.tool_input.file_path'); prettier --write "$FILE"`。Claude Code 真正暴露的 env 变量是 `CLAUDE_PROJECT_DIR` / `CLAUDE_PLUGIN_ROOT` / `CLAUDE_PLUGIN_DATA` / `CLAUDE_ENV_FILE` / `CLAUDE_EFFORT` / `CLAUDE_CODE_REMOTE`，其余字段都从 stdin 拿 |
 
 ### 第 6 章 · 海纳百川（MCP）
 
-| 严重 | 位置 | 错误 | 修正 |
+| 严重等级 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
 | 🟠 High | §6.4.3 表格 + §6.4 关于 `.claude/settings.local.json` 存放凭证的说法 | 写"用户级 MCP 在 `~/.claude/` 目录"——但 Claude Code 不识别这个位置；以及"凭证放在 `.claude/settings.local.json`"——但 `mcpServers` 不是 settings.json 的合法顶级键，写进去会被静默忽略 | 用户级 MCP 在 **`~/.claude.json`** 顶级 `mcpServers`；项目级在 `<项目根>/.mcp.json`；项目私有（含凭证）在 `~/.claude.json` 的 `projects.<项目路径>.mcpServers`。最简单的做法是 `claude mcp add --scope user/project/local`，CLI 写到正确位置。注意 `claude mcp add` 默认 scope 是 `local` 不是 `user` |
 
 ### 第 7 章 · 无为而治（Headless）
 
-| 严重 | 位置 | 错误 | 修正 |
+| 严重等级 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
 | 🔴 **Critical** | §7.4 GitHub Actions 完整示例最后一步 `grep -qi "critical"` | 用 `grep -qi "critical"` 作为"是否有严重问题"的 verdict 检查。`-i` 大小写不敏感 + "critical" 是 PR review 输出里**几乎必然出现的词**（"no critical issues"、"non-critical"、prompt 自身提示 critical 类问题），导致**workflow 几乎每次都被自己的检查触发 exit 1，看上去像永远在失败** | 让 Claude 在 prompt 末尾输出唯一 sentinel token，例如 `<VERDICT>request_changes</VERDICT>` / `<VERDICT>approved</VERDICT>`，下游用 `grep -qF "<VERDICT>request_changes</VERDICT>"` 判定。修复版可直接参考本仓库 [`08-Headless/projects/01-github-actions/.github/workflows/pr-review.yml`](../08-Headless/projects/01-github-actions/.github/workflows/pr-review.yml) |
 | 🟠 High | §7.4 同一示例 `Post Review Comment` 步骤 | `const result = \`${{ steps.review.outputs.result }}\`;`——把 GitHub Actions 多行 markdown 输出**直接拼进 JS 模板字面量**。Code Review 输出常含反引号代码块和 `${...}`，会破坏 JS 解析 | 把 review 内容写到 `review.md` 文件，github-script 里 `fs.readFileSync('review.md', 'utf8')` 读取——不要走 `${{ }}` 拼字符串。多行变量通过 `env:` 块传递，避免命令注入 |
@@ -87,7 +90,7 @@ Claude Code 本身在 2025–2026 高速迭代，部分 API、字段名、配置
 
 ⚠️ 这一章的 Python SDK API 在书稿付印后变动较大，三个核心模式的所有代码示例都需要修正。下面三条都已在 `claude-agent-sdk==0.1.81` 实际 import 验证。
 
-| 严重 | 位置 | 错误 | 修正 |
+| 严重等级 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
 | 🔴 **Critical** | §8.2 / §8.3 / §8.5 / §8.10 全部 `async for message in query(...)` 示例 | 访问 `message.type` 并按字符串判断分支——SDK 返回的是 **dataclass 实例**（`SystemMessage` / `AssistantMessage` / `UserMessage` / `ResultMessage`），它们**没有 `.type` 属性**，会抛 `AttributeError` | 用 `isinstance()` 判断：`if isinstance(message, AssistantMessage): for block in message.content: ...`；`SystemMessage` 通过 `message.subtype == "init"` 区分 |
 | 🔴 **Critical** | §8.4 / §8.10 `ClaudeAgentOptions(...)` 实例化 | 用了不存在的字段：`append_system_prompt=...`（不存在）、`mcp_servers=[...]`（应为 dict 不是 list）、`no_session_persistence=False`（仅 CLI flag，不是 Options 字段） | append system prompt 改用 `system_prompt={"type": "preset", "preset": "claude_code", "append": "..."}`；`mcp_servers={"db": {"command": "python", "args": ["./db_server.py"]}}`；删除 `no_session_persistence` |
@@ -95,7 +98,7 @@ Claude Code 本身在 2025–2026 高速迭代，部分 API、字段名、配置
 
 ### 第 9 章 · 集腋成裘（Plugins）
 
-| 严重 | 位置 | 错误 | 修正 |
+| 严重等级 | 位置 | 错误 | 修正 |
 |:--:|:--|:--|:--|
 | 🔴 **Critical** | §9.2 `hooks/hooks.json` 示例 | 用了扁平数组 `{"hooks": [{"event": "PreToolUse", "matcher": "Bash", "command": [...]}]}`——这个格式 Claude Code 不识别，hook 不会触发 | 用与 `settings.json` 完全相同的嵌套格式：`{"hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": "..."}]}]}}` |
 | 🟡 Medium | §9.6 `marketplace.json` schema | 顶层缺 `owner` 对象，每个 plugin 用了 `repository` + `version` 平铺字段 | 真实 schema 顶层需要 **`owner: {name, email?}`**；每个 plugin 用 **`source`**（字符串路径或 `{source: "github", repo: "..."}` 对象）替代 `repository`。`version` 字段属于 `plugin.json`，不在 marketplace 入口里 |
