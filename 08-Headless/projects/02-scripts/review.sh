@@ -51,7 +51,12 @@ echo ""
 # 构建文件列表
 if [ -d "$TARGET" ]; then
     FILES=$(find "$TARGET" -type f \( -name "*.ts" -o -name "*.js" -o -name "*.py" -o -name "*.go" -o -name "*.rs" \) | head -20)
-    FILE_COUNT=$(echo "$FILES" | wc -l)
+    # 用 grep -c . 而不是 wc -l —— 空字符串时 wc -l 错误返回 1
+    FILE_COUNT=$(echo "$FILES" | grep -c . || true)
+    if [ "$FILE_COUNT" -eq 0 ]; then
+        echo -e "${RED}No files matched under $TARGET${NC}"
+        exit 1
+    fi
     echo -e "${YELLOW}Found $FILE_COUNT files to review${NC}"
 else
     FILES="$TARGET"
@@ -84,10 +89,25 @@ Provide a detailed report with:
 - Overall code quality score (1-10)"
 
 # 执行审查并保存结果
-RESULT=$(claude -p "$PROMPT" \
+# 注意：bash `set -e` 不会因为命令替换 `$(...)` 中的命令失败而退出，
+# 所以必须把输出落盘后显式检查 $?，否则 claude 失败时 RESULT 为空、脚本继续跑、
+# 生成一份空报告——这是经典的"静默失败"陷阱。
+if ! claude -p "$PROMPT" \
     --output-format text \
     --max-turns 15 \
-    --allowedTools Read,Grep,Glob)
+    --allowedTools Read,Grep,Glob > "/tmp/review-result-$$.txt" 2> "/tmp/review-err-$$.txt"; then
+    echo -e "${RED}Error: claude command failed${NC}"
+    cat "/tmp/review-err-$$.txt"
+    rm -f "/tmp/review-result-$$.txt" "/tmp/review-err-$$.txt"
+    exit 1
+fi
+RESULT=$(cat "/tmp/review-result-$$.txt")
+rm -f "/tmp/review-result-$$.txt" "/tmp/review-err-$$.txt"
+
+if [ -z "$RESULT" ]; then
+    echo -e "${RED}Error: claude returned empty result${NC}"
+    exit 1
+fi
 
 # 输出结果
 echo ""
