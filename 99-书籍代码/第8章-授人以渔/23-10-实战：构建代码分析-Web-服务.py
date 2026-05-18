@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""代码分析 Agent 服务——一个可运行的完整示例"""
+"""代码分析 Web 服务——一个可运行的完整示例"""
 
 import asyncio
 import sys

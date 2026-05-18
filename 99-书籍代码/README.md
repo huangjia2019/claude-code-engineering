@@ -2,6 +2,12 @@
 
 本目录是《Claude Code 实战》（黄佳 著）全书 10 章配套代码片段的整理稿。
 
+## 维护信息
+
+- GitHub 仓库：https://github.com/huangjia2019/claude-code-engineering
+- 本地公开仓目录：`/home/huangj2/Documents/05-Engineering/claude-code-engingeering`
+- 私有讨论/书稿工作仓：`/home/huangj2/Documents/05-Engineering/claude-code-engingeering-private`
+
 ## 章节概览
 
 | 章节 | 主题 | 代码片段数 |
